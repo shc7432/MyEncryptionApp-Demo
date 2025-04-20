@@ -2,7 +2,8 @@
   <div id="app">
     <nav>
       <router-link to="/message">消息加密</router-link>
-      <router-link to="/file">文件加密</router-link>
+      <router-link to="/file" v-show="supportsFileAPI">文件加密</router-link>
+      <router-link to="/file-classic" v-show="!supportsFileAPI">文件加密(兼容版)</router-link>
     </nav>
     <router-view />
   </div>
@@ -10,7 +11,12 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    supportsFileAPI() {
+      return 'showSaveFilePicker' in window;
+    }
+  }
 }
 </script>
 
@@ -19,14 +25,14 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 1S0px;
 }
 
 nav {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-bottom: 30px;
+  gap: 15px;
+  margin-bottom: 10px;
 }
 
 nav a {

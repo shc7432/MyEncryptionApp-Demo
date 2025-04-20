@@ -1,9 +1,9 @@
 <template>
   <div class="file-page">
-    <h2>文件加密/解密</h2>
+    <h2>文件加密/解密(兼容版)</h2>
     
     <div class="input-section">
-      <button @click="selectFile">选择文件</button>
+      <input type="file" ref="fileInput" @change="handleFileChange">
       <input type="password" v-model="password" placeholder="输入密码">
       
       <div class="button-group">
@@ -24,7 +24,7 @@
 import { encrypt_file, decrypt_file } from '../../modules/MyEncryption/dist/main.bundle.js'
 
 export default {
-  name: 'FilePage',
+  name: 'FileClassicPage',
   data() {
     return {
       selectedFile: null,
@@ -34,13 +34,10 @@ export default {
     }
   },
   methods: {
-    async selectFile() {
-      try {
-        const [fileHandle] = await window.showOpenFilePicker();
-        this.selectedFile = await fileHandle.getFile();
+    handleFileChange(event) {
+      this.selectedFile = event.target.files[0];
+      if (this.selectedFile) {
         this.statusMessage = `已选择文件: ${this.selectedFile.name}`;
-      } catch (error) {
-        this.statusMessage = '文件选择取消或出错: ' + error.message;
       }
     },
     async encryptFile() {
@@ -51,21 +48,26 @@ export default {
     
       try {
         const encryptedFileName = `${this.selectedFile.name}.enc`;
-        const saveHandle = await window.showSaveFilePicker({
-          suggestedName: encryptedFileName
-        });
         
-        const writable = await saveHandle.createWritable();
+        // 传统方式保存文件
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        
         const chunkSize = 32 * 1024 * 1024; // 32MB分块
         const fileSize = this.selectedFile.size;
         let position = 0;
+        
+        const chunks = [];
         
         await encrypt_file(
           async (start, end) => {
             const chunk = await this.selectedFile.slice(start, end).arrayBuffer();
             return new Uint8Array(chunk);
           },
-          (data) => writable.write(data),
+          (data) => {
+            chunks.push(data);
+          },
           this.password,
           (progress) => {
             const percent = (progress / this.selectedFile.size * 100).toFixed(2);
@@ -76,7 +78,15 @@ export default {
           chunkSize
         );
         
-        await writable.close();
+        const blob = new Blob(chunks, { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = encryptedFileName;
+        link.click();
+        
+        URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+        
         this.statusMessage = `文件加密成功: ${encryptedFileName}`;
       } catch (error) {
         this.statusMessage = '加密失败: ' + error.message;
@@ -93,21 +103,25 @@ export default {
           ? this.selectedFile.name.slice(0, -4) 
           : `decrypted_${this.selectedFile.name}`;
           
-        const saveHandle = await window.showSaveFilePicker({
-          suggestedName: decryptedFileName
-        });
+        // 传统方式保存文件
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        document.body.appendChild(link);
         
-        const writable = await saveHandle.createWritable();
         const chunkSize = 32 * 1024 * 1024; // 32MB分块
         const fileSize = this.selectedFile.size;
         let position = 0;
+        
+        const chunks = [];
         
         await decrypt_file(
           async (start, end) => {
             const chunk = await this.selectedFile.slice(start, end).arrayBuffer();
             return new Uint8Array(chunk);
           },
-          (data) => writable.write(data),
+          (data) => {
+            chunks.push(data);
+          },
           this.password,
           (progress) => {
             const percent = (progress / this.selectedFile.size * 100).toFixed(2);
@@ -118,16 +132,25 @@ export default {
           chunkSize
         );
         
-        await writable.close();
+        const blob = new Blob(chunks, { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = decryptedFileName;
+        link.click();
+        
+        URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+        
         this.statusMessage = `文件解密成功: ${decryptedFileName}`;
       } catch (error) {
         this.statusMessage = '解密失败: ' + error.message;
       }
     },
     clearAll() {
-      this.selectedFile = null
-      this.password = ''
-      this.statusMessage = ''
+      this.$refs.fileInput.value = '';
+      this.selectedFile = null;
+      this.password = '';
+      this.statusMessage = '';
     }
   }
 }

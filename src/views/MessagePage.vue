@@ -7,9 +7,9 @@
       <input type="password" v-model="password" placeholder="输入密码">
       
       <div class="button-group">
-        <button @click="encryptText">加密</button>
-        <button @click="decryptText">解密</button>
-        <button @click="clearAll">清空</button>
+        <button @click="encryptText" :disabled="isLoading">加密</button>
+        <button @click="decryptText" :disabled="isLoading">解密</button>
+        <button @click="clearAll" :disabled="isLoading">清空</button>
       </div>
     </div>
     
@@ -31,7 +31,8 @@ export default {
       inputText: '',
       password: '',
       outputText: '',
-      copyButtonText: '复制结果'
+      copyButtonText: '复制结果',
+      isLoading: false
     }
   },
   methods: {
@@ -42,9 +43,13 @@ export default {
       }
       
       try {
+        this.isLoading = true
+        this.outputText = '加密中...'
         this.outputText = await encrypt_data(this.inputText, this.password)
       } catch (error) {
         this.outputText = '加密失败: ' + error.message
+      } finally {
+        this.isLoading = false
       }
     },
     async decryptText() {
@@ -54,9 +59,13 @@ export default {
       }
       
       try {
+        this.isLoading = true
+        this.outputText = '解密中...'
         this.outputText = await decrypt_data(this.inputText, this.password)
       } catch (error) {
         this.outputText = '解密失败: ' + error.message
+      } finally {
+        this.isLoading = false
       }
     },
     clearAll() {
@@ -86,7 +95,7 @@ export default {
 .message-page {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
 }
 
 .input-section {
@@ -125,7 +134,12 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+button:not(:disabled):hover {
   background: #1a2a3a;
 }
 

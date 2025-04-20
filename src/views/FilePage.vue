@@ -68,8 +68,12 @@ export default {
           (data) => writable.write(data),
           this.password,
           (progress) => {
-            const percent = (progress / this.selectedFile.size * 100).toFixed(2);
-            this.statusMessage = `加密中... ${percent}%`;
+            if (progress >= this.selectedFile.size) {
+              this.statusMessage = '正在保存文件，请稍候...这可能需要一些时间。';
+            } else {
+              const percent = (progress / this.selectedFile.size * 100).toFixed(2);
+              this.statusMessage = `加密中... ${percent}%`;
+            }
           },
           null,
           null,
@@ -110,8 +114,12 @@ export default {
           (data) => writable.write(data),
           this.password,
           (progress) => {
-            const percent = (progress / this.selectedFile.size * 100).toFixed(2);
-            this.statusMessage = `解密中... ${percent}%`;
+            if (progress >= this.selectedFile.size) {
+              this.statusMessage = '正在保存文件，请稍候...这可能需要一些时间。';
+            } else {
+              const percent = (progress / this.selectedFile.size * 100).toFixed(2);
+              this.statusMessage = `解密中... ${percent}%`;
+            }
           },
           null,
           null,

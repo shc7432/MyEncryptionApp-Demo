@@ -3,7 +3,7 @@
     <nav>
       <router-link to="/message">消息加密</router-link>
       <router-link to="/file" v-show="supportsFileAPI">文件加密</router-link>
-      <router-link to="/file-classic" v-show="!supportsFileAPI">文件加密(兼容版)</router-link>
+      <router-link to="/file-classic" v-show="!supportsFileAPI">文件加密2</router-link>
     </nav>
     <router-view />
   </div>

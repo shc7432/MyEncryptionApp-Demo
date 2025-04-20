@@ -48,7 +48,8 @@ export default {
         this.statusMessage = '请选择文件并输入密码';
         return;
       }
-    
+      
+      this.isLoading = true;
       try {
         const encryptedFileName = `${this.selectedFile.name}.enc`;
         const saveHandle = await window.showSaveFilePicker({
@@ -84,6 +85,8 @@ export default {
         this.statusMessage = `文件加密成功: ${encryptedFileName}`;
       } catch (error) {
         this.statusMessage = '加密失败: ' + error.message;
+      } finally {
+        this.isLoading = false;
       }
     },
     async decryptFile() {
@@ -92,6 +95,7 @@ export default {
         return;
       }
       
+      this.isLoading = true;
       try {
         const decryptedFileName = this.selectedFile.name.endsWith('.enc') 
           ? this.selectedFile.name.slice(0, -4) 
@@ -130,6 +134,8 @@ export default {
         this.statusMessage = `文件解密成功: ${decryptedFileName}`;
       } catch (error) {
         this.statusMessage = '解密失败: ' + error.message;
+      } finally {
+        this.isLoading = false;
       }
     },
     clearAll() {

@@ -56,8 +56,6 @@ export default {
         document.body.appendChild(link);
         
         const chunkSize = 32 * 1024 * 1024; // 32MB分块
-        const fileSize = this.selectedFile.size;
-        let position = 0;
         
         const chunks = [];
         
@@ -113,8 +111,6 @@ export default {
         document.body.appendChild(link);
         
         const chunkSize = 32 * 1024 * 1024; // 32MB分块
-        const fileSize = this.selectedFile.size;
-        let position = 0;
         
         const chunks = [];
         

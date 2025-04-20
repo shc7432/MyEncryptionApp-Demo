@@ -58,8 +58,6 @@ export default {
         
         const writable = await saveHandle.createWritable();
         const chunkSize = 32 * 1024 * 1024; // 32MB分块
-        const fileSize = this.selectedFile.size;
-        let position = 0;
         
         await encrypt_file(
           async (start, end) => {
@@ -69,11 +67,11 @@ export default {
           (data) => writable.write(data),
           this.password,
           (progress) => {
-            if (progress >= this.selectedFile.size) {
+            const percent = Number(progress / this.selectedFile.size * 100);
+            if (progress >= this.selectedFile.size || percent === 100) {
               this.statusMessage = '正在保存文件，请稍候...这可能需要一些时间。';
             } else {
-              const percent = (progress / this.selectedFile.size * 100).toFixed(2);
-              this.statusMessage = `加密中... ${percent}%`;
+              this.statusMessage = `加密中... ${percent.toFixed(2)}%`;
             }
           },
           null,
@@ -107,8 +105,6 @@ export default {
         
         const writable = await saveHandle.createWritable();
         const chunkSize = 32 * 1024 * 1024; // 32MB分块
-        const fileSize = this.selectedFile.size;
-        let position = 0;
         
         await decrypt_file(
           async (start, end) => {
@@ -118,11 +114,11 @@ export default {
           (data) => writable.write(data),
           this.password,
           (progress) => {
-            if (progress >= this.selectedFile.size) {
+            const percent = Number(progress / this.selectedFile.size * 100);
+            if (progress >= this.selectedFile.size || percent === 100) {
               this.statusMessage = '正在保存文件，请稍候...这可能需要一些时间。';
             } else {
-              const percent = (progress / this.selectedFile.size * 100).toFixed(2);
-              this.statusMessage = `解密中... ${percent}%`;
+              this.statusMessage = `解密中... ${percent.toFixed(2)}%`;
             }
           },
           null,

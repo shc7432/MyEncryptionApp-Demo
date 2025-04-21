@@ -7,9 +7,19 @@
       <input type="password" v-model="password" placeholder="输入密码">
       
       <div class="button-group">
-        <button @click="encryptFile" :disabled="isLoading">加密文件</button>
-        <button @click="decryptFile" :disabled="isLoading">解密文件</button>
-        <button @click="clearAll" :disabled="isLoading">清空</button>
+        <button @click="encryptFile" :disabled="isLoading">加密</button>
+        <button @click="decryptFile" :disabled="isLoading">解密</button>
+        <button @click="changePassword" :disabled="isLoading">改密</button>
+        <button @click="clearAll" :disabled="isLoading">清除</button>
+      </div>
+      
+      <div class="password-change-section" v-if="showPasswordChange">
+        <h3>更改密码</h3>
+        <input type="password" v-model="newPassword" placeholder="输入新密码">
+        <div class="button-group">
+          <button @click="confirmPasswordChange" :disabled="isLoading">确认更改</button>
+          <button @click="cancelPasswordChange" :disabled="isLoading">取消</button>
+        </div>
       </div>
     </div>
     
@@ -21,7 +31,7 @@
 </template>
 
 <script>
-import { encrypt_file, decrypt_file } from '../../modules/MyEncryption/dist/main.bundle.js'
+import { encrypt_file, decrypt_file, change_file_password } from '../../modules/MyEncryption/dist/main.bundle.js'
 
 export default {
   name: 'FileClassicPage',
@@ -30,7 +40,10 @@ export default {
       selectedFile: null,
       password: '',
       statusMessage: '',
-      isLoading: false
+      isLoading: false,
+      showPasswordChange: false,
+      newPassword: '',
+      confirmPassword: ''
     }
   },
   methods: {
@@ -153,6 +166,62 @@ export default {
       this.selectedFile = null;
       this.password = '';
       this.statusMessage = '';
+      this.showPasswordChange = false;
+      this.newPassword = '';
+      this.confirmPassword = '';
+    },
+    
+    changePassword() {
+      if (!this.selectedFile || !this.password) {
+        this.statusMessage = '请选择文件并输入当前密码';
+        return;
+      }
+      this.showPasswordChange = true;
+      this.newPassword = '';
+      this.confirmPassword = '';
+    },
+    
+    cancelPasswordChange() {
+      this.showPasswordChange = false;
+      this.newPassword = '';
+      this.confirmPassword = '';
+    },
+    
+    async confirmPasswordChange() {
+      if (!this.newPassword) {
+        this.statusMessage = '请输入新密码并确认';
+        return;
+      }
+      
+      
+      this.isLoading = true;
+      try {
+        const blob = this.selectedFile.slice(0, 2048);
+        
+        const newFileHead = await change_file_password(blob, this.password, this.newPassword);
+        
+        // 传统方式保存修改后的文件
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        
+        const url = URL.createObjectURL(new Blob([newFileHead, this.selectedFile.slice(2048)], { type: 'application/octet-stream' }));
+        link.href = url;
+        link.download = this.selectedFile.name;
+        link.click();
+        
+        URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+        
+        this.statusMessage = '密码更改成功';
+        this.showPasswordChange = false;
+        this.newPassword = '';
+        this.confirmPassword = '';
+      } catch (error) {
+        this.statusMessage = '密码更改失败: ' + error.message;
+      } finally {
+        this.isLoading = false;
+      }
     }
   }
 }
@@ -202,7 +271,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button:hover {
+button:not(:disabled):hover {
   background: #1a2a3a;
 }
 

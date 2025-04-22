@@ -12,7 +12,11 @@ export default defineConfig({
     port: 5173
   },
   build: {
-    target: 'es2022'
+    target: 'es2022',
+    sourcemap: true,
+    rollupOptions: {
+      external: ['../../lib/encryption/main.bundle.js']
+    }
   },
   base: '/webstatic/my-encryption-app/'
 })

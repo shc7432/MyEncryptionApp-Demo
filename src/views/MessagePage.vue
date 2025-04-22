@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { encrypt_data, decrypt_data } from '../../modules/MyEncryption/dist/main.bundle.js'
+import { encrypt_data, decrypt_data } from '../../lib/encryption/main.bundle.js'
 
 export default {
   name: 'MessagePage',
@@ -38,7 +38,7 @@ export default {
   methods: {
     async encryptText() {
       if (!this.inputText || !this.password) {
-        alert('请输入消息和密码')
+        this.outputText = ('请输入消息和密码')
         return
       }
       
@@ -54,7 +54,7 @@ export default {
     },
     async decryptText() {
       if (!this.inputText || !this.password) {
-        alert('请输入密文和密码')
+        this.outputText = ('请输入密文和密码')
         return
       }
       

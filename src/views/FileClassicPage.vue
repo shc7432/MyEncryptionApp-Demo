@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { encrypt_file, decrypt_file, change_file_password } from '../../modules/MyEncryption/dist/main.bundle.js'
+import { encrypt_file, decrypt_file, change_file_password } from '../../lib/encryption/main.bundle.js'
 
 export default {
   name: 'FileClassicPage',

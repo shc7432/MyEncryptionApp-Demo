@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "esbuild": ">=0.25.0",
+    "mp4box": "^0.5.4",
     "vue": "^3.3.0",
     "vue-router": "^4.5.0"
   },

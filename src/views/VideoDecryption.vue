@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { Stream, crypt_context_create, crypt_context_destroy, decrypt_stream_init, decrypt_stream } from '../../lib/encryption/main.bundle.js';
+import { Stream, crypt_context_create, crypt_context_destroy, decrypt_stream_init, decrypt_stream } from 'simple-web-encryption';
 import { PlayMp4Video } from '../play_video.js';
 
 export default {
@@ -82,21 +82,13 @@ export default {
 
                 await decrypt_stream_init(ctx, new Stream((start, end) => {
                     return fileReader(start, end)
-                }), file.size, key);
+                }, file.size), key);
                 console.log('ctx=', ctx);
 
                 const video = this.$refs.videoPlayer;
                 video.controls = true;
-                let ms;
-                await new Promise((resolve) => {
-                    ms = new MediaSource();
-                    video.src = URL.createObjectURL(ms);
-                    ms.addEventListener('sourceopen', () => {
-                        resolve()
-                    }, { once: true });
-                });
 
-                this.cleanup = await PlayMp4Video(video, ms, (async (start, end) => {
+                this.cleanup = await PlayMp4Video(video, (async (start, end) => {
                     const buffer = await decrypt_stream(ctx, start, end);
                     return buffer;
                 }));

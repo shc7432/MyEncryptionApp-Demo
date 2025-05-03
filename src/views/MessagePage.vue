@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { encrypt_data, decrypt_data } from '../../lib/encryption/main.bundle.js'
+import { encrypt_data, decrypt_data } from 'simple-web-encryption'
 
 export default {
   name: 'MessagePage',

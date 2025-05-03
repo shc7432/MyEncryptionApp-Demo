@@ -6,7 +6,29 @@
       <input type="file" ref="fileInput" @change="handleFileChange">
       <input type="password" v-model="password" placeholder="输入密码">
       
-      <div class="button-group">
+      <div class="chunk-size-group">
+        <div class="chunk-size-header">
+          <label>分块大小(MiB):</label>
+          <input type="number" v-model.number="chunkSize" min="1" max="128">
+        </div>
+        
+        <details class="hint-box" open>
+          <summary class="hint-title">分块大小建议:</summary>
+          <ul class="hint-list">
+            <li><strong>大文件(32MiB)</strong>: 整体文件处理，提高性能</li>
+            <li><strong>视频文件(5-32MiB)</strong>: 增强随机读取性能</li>
+            <li><strong>一般视频(5MiB)</strong>: 适合大多数视频文件</li>
+            <li><strong>较大视频(16-32MiB)</strong>: 适合高清/4K视频</li>
+          </ul>
+          
+          <div class="warning-text">
+            ⚠️ 注意: 分块太小会导致文件被分成过多块，可能产生大量请求次数，造成额外费用。
+            请根据文件类型和大小选择合适的分块大小。
+          </div>
+        </details>
+      </div>
+      
+      <div class="button-group" style="margin-top: 0.5em;">
         <button @click="encryptFile" :disabled="isLoading">加密</button>
         <button @click="decryptFile" :disabled="isLoading">解密</button>
         <button @click="changePassword" :disabled="isLoading">改密</button>
@@ -31,7 +53,7 @@
 </template>
 
 <script>
-import { encrypt_file, decrypt_file, change_file_password } from '../../lib/encryption/main.bundle.js'
+import { encrypt_file, decrypt_file, change_file_password } from 'simple-web-encryption'
 
 export default {
   name: 'FileClassicPage',
@@ -39,6 +61,7 @@ export default {
     return {
       selectedFile: null,
       password: '',
+      chunkSize: 32, // 默认32MiB
       statusMessage: '',
       isLoading: false,
       showPasswordChange: false,
@@ -71,7 +94,7 @@ export default {
         link.style.display = 'none';
         document.body.appendChild(link);
         
-        const chunkSize = 32 * 1024 * 1024; // 32MB分块
+        const chunkSize = this.chunkSize * 1024 * 1024;
         
         const chunks = [];
         
@@ -126,8 +149,6 @@ export default {
         link.style.display = 'none';
         document.body.appendChild(link);
         
-        const chunkSize = 32 * 1024 * 1024; // 32MB分块
-        
         const chunks = [];
         
         await decrypt_file(
@@ -143,9 +164,6 @@ export default {
             const percent = (progress / this.selectedFile.size * 100).toFixed(2);
             this.statusMessage = `解密中... ${percent}%`;
           },
-          null,
-          null,
-          chunkSize
         );
         
         const blob = new Blob(chunks, { type: 'application/octet-stream' });
@@ -287,5 +305,45 @@ button:not(:disabled):hover {
   border: 1px solid #ddd;
   border-radius: 4px;
   background: #f9f9f9;
+}
+
+.chunk-size-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.hint-box {
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #4a89dc;
+}
+
+.hint-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.hint-list {
+  margin: 10px 0;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.hint-list li {
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.warning-text {
+  margin-top: 10px;
+  padding: 10px;
+  background: #fff8e1;
+  border-radius: 4px;
+  color: #e65100;
+  font-size: 0.9em;
 }
 </style>

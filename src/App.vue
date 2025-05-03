@@ -26,7 +26,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
-  margin-top: 1S0px;
 }
 
 nav {
@@ -47,5 +46,9 @@ nav a {
 nav a.router-link-exact-active {
   color: white;
   background: #2c3e50;
+}
+
+input, textarea {
+  box-sizing: border-box;
 }
 </style>

@@ -1,8 +1,18 @@
 <template>
     <div class="video-decrypt-container">
-        <input type="file" @change="handleFileSelect" />
+        <div class="mode-selector">
+            <label>
+                <input type="radio" v-model="mode" value="local" /> 本地文件
+            </label>
+            <label>
+                <input type="radio" v-model="mode" value="remote" /> 在线文件
+            </label>
+        </div>
+        
+        <input v-if="mode === 'local'" type="file" @change="handleFileSelect" />
+        <input v-if="mode === 'remote'" type="text" v-model="fileUrl" placeholder="输入视频URL" />
         <input type="password" v-model="password" placeholder="输入解密密码" />
-        <button @click="playVideo" :disabled="!file || playing">播放视频</button>
+        <button @click="playVideo" :disabled="(!file && mode === 'local') || (!fileUrl && mode === 'remote') || playing">播放视频</button>
 
         <dialog style="width: 100%; height: 100%; display: flex; flex-direction: column;" ref="videoDialog" @close="handleDialogClose">
             <video v-if="playing" ref="videoPlayer" controls style="flex: 1;"></video>
@@ -13,7 +23,7 @@
 
 <script>
 import { Stream, crypt_context_create, crypt_context_destroy, decrypt_stream_init, decrypt_stream } from '../../lib/encryption/main.bundle.js';
-import { PlayMp4Video, setLogEnabled } from '../play_video.js';
+import { PlayMp4Video } from '../play_video.js';
 
 export default {
     name: 'VideoDecryption',
@@ -21,15 +31,30 @@ export default {
         return {
             ctx: null,
             file: null,
+            fileUrl: '',
             password: '',
             playing: false,
             cleanup: null,
+            mode: 'local',
         }
     },
 
     methods: {
         handleFileSelect(event) {
             this.file = event.target.files[0];
+        },
+        async getFileSize(url) {
+            const abortController = new AbortController();
+            const resp = await fetch(url, { signal: abortController.signal });
+            if (!resp.ok) {
+                throw new Error(`Failed to fetch file size: ${resp.statusText}`);
+            }
+            const contentLength = +resp.headers.get('Content-Length');
+            if (isNaN(contentLength)) {
+                throw new Error('Content-Length header is missing or invalid');
+            }
+            abortController.abort();
+            return contentLength;
         },
         async playVideo() {
             try {
@@ -39,10 +64,18 @@ export default {
                 const ctx = await crypt_context_create();
                 this.ctx = ctx;
 
-                const file = this.file;
-                const fileReader = async (start, end) => {
+                let file = (this.mode === 'local') ? this.file : ({ size: await this.getFileSize(this.fileUrl) });
+                const fileReader = (this.mode === 'local') ? async (start, end) => {
                     const blob = file.slice(start, end);
                     return new Uint8Array(await blob.arrayBuffer());
+                } : async (start, end) => {
+                    const resp = await fetch(this.fileUrl, {
+                        headers: {
+                            'Range': `bytes=${start}-${end - 1}`
+                        },
+                        method: 'GET'
+                    });
+                    return new Uint8Array(await resp.arrayBuffer());
                 };
 
                 const key = this.password;
@@ -99,17 +132,30 @@ export default {
     padding: 20px;
 }
 
+.mode-selector {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.mode-selector label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 input[type="file"] {
     width: 100%;
     margin-bottom: 10px;
 }
 
-input[type="password"] {
+input:not([type="file"]):not([type="radio"]) {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 button {

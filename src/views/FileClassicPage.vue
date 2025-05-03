@@ -54,9 +54,12 @@ export default {
       }
     },
     async encryptFile() {
-      if (!this.selectedFile || !this.password) {
-        this.statusMessage = '请选择文件并输入密码';
+      if (!this.selectedFile) {
+        this.statusMessage = '请选择文件';
         return;
+      }
+      if (!this.password) {
+        if (!confirm('确定要使用空密码？这非常不安全！')) return;
       }
       
       this.isLoading = true;
@@ -107,8 +110,8 @@ export default {
       }
     },
     async decryptFile() {
-      if (!this.selectedFile || !this.password) {
-        this.statusMessage = '请选择文件并输入密码';
+      if (!this.selectedFile) {
+        this.statusMessage = '请选择文件';
         return;
       }
       
@@ -172,7 +175,7 @@ export default {
     },
     
     changePassword() {
-      if (!this.selectedFile || !this.password) {
+      if (!this.selectedFile) {
         this.statusMessage = '请选择文件并输入当前密码';
         return;
       }
@@ -189,14 +192,13 @@ export default {
     
     async confirmPasswordChange() {
       if (!this.newPassword) {
-        this.statusMessage = '请输入新密码并确认';
-        return;
+        if (!confirm('确定要使用空密码？这非常不安全！')) return;
       }
       
       
       this.isLoading = true;
       try {
-        const blob = this.selectedFile.slice(0, 2048);
+        const blob = this.selectedFile.slice(0, 5000);
         
         const newFileHead = await change_file_password(blob, this.password, this.newPassword);
         
@@ -205,7 +207,7 @@ export default {
         link.style.display = 'none';
         document.body.appendChild(link);
         
-        const url = URL.createObjectURL(new Blob([newFileHead, this.selectedFile.slice(2048)], { type: 'application/octet-stream' }));
+        const url = URL.createObjectURL(new Blob([newFileHead, this.selectedFile.slice(newFileHead.size)], { type: 'application/octet-stream' }));
         link.href = url;
         link.download = this.selectedFile.name;
         link.click();

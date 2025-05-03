@@ -61,9 +61,12 @@ export default {
       }
     },
     async encryptFile() {
-      if (!this.selectedFile || !this.password) {
-        this.statusMessage = '请选择文件并输入密码';
+      if (!this.selectedFile) {
+        this.statusMessage = '请选择文件';
         return;
+      }
+      if (!this.password) {
+        if (!confirm('确定要使用空密码？这非常不安全！')) return;
       }
       
       this.isLoading = true;
@@ -105,8 +108,8 @@ export default {
       }
     },
     async decryptFile() {
-      if (!this.selectedFile || !this.password) {
-        this.statusMessage = '请选择文件并输入密码';
+      if (!this.selectedFile) {
+        this.statusMessage = '请选择文件';
         return;
       }
       
@@ -157,8 +160,8 @@ export default {
       this.statusMessage = ''
     },
     changePassword() {
-      if (!this.selectedFile || !this.password) {
-        this.statusMessage = '请选择文件并输入当前密码';
+      if (!this.selectedFile) {
+        this.statusMessage = '请选择文件';
         return;
       }
       this.showPasswordChange = true;
@@ -174,8 +177,7 @@ export default {
     
     async confirmPasswordChange() {
       if (!this.newPassword) {
-        this.statusMessage = '请输入新密码';
-        return;
+        if (!confirm('确定要使用空密码？这非常不安全！')) return;
       }
       
       this.isLoading = true;
@@ -184,7 +186,7 @@ export default {
         const fileHandle = this.selectedFileHandle;
         
         const file = this.selectedFile;
-        const blob = file.slice(0, 2048);
+        const blob = file.slice(0, 5000);
         
         this.statusMessage = '正在更改密码，请稍候...';
         const newFileHead = await change_file_password(blob, this.password, this.newPassword);

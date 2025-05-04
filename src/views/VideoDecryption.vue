@@ -68,28 +68,29 @@ export default {
                 const fileReader = (this.mode === 'local') ? async (start, end) => {
                     const blob = file.slice(start, end);
                     return new Uint8Array(await blob.arrayBuffer());
-                } : async (start, end) => {
+                } : async (start, end, signal) => {
                     const resp = await fetch(this.fileUrl, {
                         headers: {
                             'Range': `bytes=${start}-${end - 1}`
                         },
-                        method: 'GET'
+                        method: 'GET',
+                        signal
                     });
                     return new Uint8Array(await resp.arrayBuffer());
                 };
 
                 const key = this.password;
 
-                await decrypt_stream_init(ctx, new Stream((start, end) => {
-                    return fileReader(start, end)
+                await decrypt_stream_init(ctx, new Stream((start, end, signal) => {
+                    return fileReader(start, end, signal)
                 }, file.size), key);
                 console.log('ctx=', ctx);
 
                 const video = this.$refs.videoPlayer;
                 video.controls = true;
 
-                this.cleanup = await PlayMp4Video(video, (async (start, end) => {
-                    const buffer = await decrypt_stream(ctx, start, end);
+                this.cleanup = await PlayMp4Video(video, (async (start, end, controller) => {
+                    const buffer = await decrypt_stream(ctx, start, end, controller);
                     return buffer;
                 }));
 
@@ -171,5 +172,9 @@ button:not(:disabled):hover {
 
 dialog:not(:modal) {
     display: none !important;
+}
+
+video {
+    background: black;
 }
 </style>

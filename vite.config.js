@@ -16,7 +16,7 @@ export default defineConfig({
         sourcemap: true,
         rollupOptions: {
             external: [
-                "simple-web-encryption",
+                
             ],
         }
     },
@@ -25,7 +25,7 @@ export default defineConfig({
             target: 'es2022' // 确保设置为支持 top-level await 的版本
         },
         exclude: [
-            "simple-web-encryption",
+            
         ]
     },
     base: '/webstatic/my-encryption-app/'

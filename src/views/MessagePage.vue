@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { encrypt_data, decrypt_data } from 'simple-web-encryption'
+import { encrypt_data, decrypt_data } from 'simple-data-crypto/builder'
 
 export default {
   name: 'MessagePage',

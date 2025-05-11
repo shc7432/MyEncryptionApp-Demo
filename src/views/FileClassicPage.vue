@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { encrypt_file, decrypt_file, change_file_password } from 'simple-web-encryption'
+import { encrypt_file, decrypt_file, change_file_password } from 'simple-data-crypto/builder'
 
 export default {
   name: 'FileClassicPage',

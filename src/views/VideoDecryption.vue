@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { Stream, crypt_context_create, crypt_context_destroy, decrypt_stream_init, decrypt_stream } from 'simple-web-encryption';
+import { Stream, crypt_context_create, crypt_context_destroy, decrypt_stream_init, decrypt_stream } from 'simple-data-crypto/builder';
 import { PlayMp4Video } from '../play_video.js';
 
 export default {

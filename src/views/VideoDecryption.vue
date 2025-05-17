@@ -23,7 +23,7 @@
 
 <script>
 import { Stream, crypt_context_create, crypt_context_destroy, decrypt_stream_init, decrypt_stream } from 'simple-data-crypto/builder';
-import { PlayMp4Video } from '../play_video.js';
+import { PlayMp4Video } from 'play-video-streamed';
 
 export default {
     name: 'VideoDecryption',
@@ -84,7 +84,7 @@ export default {
                 await decrypt_stream_init(ctx, new Stream((start, end, signal) => {
                     return fileReader(start, end, signal)
                 }, file.size), key);
-                console.log('ctx=', ctx);
+                // console.log('ctx=', ctx);
 
                 const video = this.$refs.videoPlayer;
                 video.controls = true;
@@ -111,7 +111,7 @@ export default {
                 this.cleanup = null;
             }
             crypt_context_destroy(this.ctx);
-            console.log('ctx destroy', this.ctx);
+            // console.log('ctx destroy', this.ctx);
             this.ctx = null;
         }
     }

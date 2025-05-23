@@ -2,6 +2,8 @@
 
 一个基于Vue.js的加密应用，提供文件加密和消息加密功能。
 
+[在线演示](https://webstatic.static-resource.182375.xyz/webstatic/my-encryption-app/)
+
 ## 功能特点
 
 - 文件加密/解密

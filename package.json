@@ -9,8 +9,8 @@
   "dependencies": {
     "esbuild": ">=0.25.0",
     "mp4box": "^0.5.4",
-    "play-video-streamed": "^5.6.0",
-    "simple-data-crypto": "^1.56.1",
+    "play-video-streamed": "^5.6.1",
+    "simple-data-crypto": "^1.56.2",
     "vue": "^3.3.0",
     "vue-router": "^4.5.0"
   },

@@ -32,7 +32,7 @@
 </template>
 
 <script>
-await import('../simple-data-crypto-file-preview.js');
+import '../simple-data-crypto-file-preview.js';
 export default {
     data() {
         return {

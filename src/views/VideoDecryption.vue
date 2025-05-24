@@ -9,10 +9,10 @@
             </label>
         </div>
         
-        <input v-if="mode === 'local'" type="file" @change="handleFileSelect" />
+        <input v-if="mode === 'local'" type="file" ref="filebox" />
         <input v-if="mode === 'remote'" type="text" v-model="fileUrl" placeholder="输入视频URL" />
         <input type="password" v-model="password" placeholder="输入解密密码" />
-        <button @click="playVideo" :disabled="(!file && mode === 'local') || (!fileUrl && mode === 'remote') || playing">播放视频</button>
+        <button @click="playVideo" :disabled="(mode === 'local') || (!fileUrl && mode === 'remote') || playing">播放视频</button>
 
         <dialog style="width: 100%; height: 100%; display: flex; flex-direction: column;" ref="videoDialog" @close="handleDialogClose">
             <video v-if="playing" ref="videoPlayer" controls style="flex: 1;"></video>
@@ -40,9 +40,6 @@ export default {
     },
 
     methods: {
-        handleFileSelect(event) {
-            this.file = event.target.files[0];
-        },
         async getFileSize(url) {
             const abortController = new AbortController();
             const resp = await fetch(url, { signal: abortController.signal });
@@ -57,6 +54,11 @@ export default {
             return contentLength;
         },
         async playVideo() {
+            this.file = this.$refs.filebox.value?.[0];
+            if (!this.file && this.mode === 'local') {
+                alert('请选择一个视频文件');
+                return;
+            }
             try {
                 this.playing = true;
                 await this.$nextTick(); // Wait for DOM update
@@ -88,6 +90,7 @@ export default {
 
                 const video = this.$refs.videoPlayer;
                 video.controls = true;
+                video.playsInline = true;
 
                 this.cleanup = await PlayMp4Video(video, (async (start, end, controller) => {
                     const buffer = await decrypt_stream(ctx, start, end, controller);

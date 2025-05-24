@@ -4,7 +4,8 @@
       <router-link to="/message">消息</router-link>
       <router-link to="/file" v-show="supportsFileAPI">文件</router-link>
       <router-link to="/file-classic" v-show="!supportsFileAPI">文件2</router-link>
-      <router-link to="/video-decrypt">视频解密</router-link>
+      <router-link to="/preview">预览</router-link>
+      <router-link to="/video-decrypt" v-show="0">视频解密</router-link>
     </nav>
     <router-view />
   </div>

@@ -3,6 +3,7 @@ import MessagePage from '../views/MessagePage.vue'
 import FilePage from '../views/FilePage.vue'
 import FileClassicPage from '../views/FileClassicPage.vue'
 import VideoDecryption from '../views/VideoDecryption.vue'
+import FilePreview from '../views/FilePreview.vue'
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
     component: FileClassicPage
   },
   {
+    path: '/preview',
+    name: 'FilePreview',
+    component: FilePreview
+  },
+  {
     path: '/video-decrypt',
     name: 'video-decrypt',
     component: VideoDecryption
@@ -28,7 +34,7 @@ const routes = [
   {
     path: '/',
     redirect: '/message'
-  }
+  },
 ]
 
 const router = createRouter({

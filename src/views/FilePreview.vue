@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import '../simple-data-crypto-file-preview.js';
+import 'simple-data-crypto-file-preview'; // It is in https://github.com/shc0743/simple-data-crypto/raw/main/impl/JavaScript/util/simple-data-crypto-file-preview/simple-data-crypto-file-preview-1.0.0.tgz
 import { version } from 'play-video-streamed';
 console.log('play-video-streamed version:', version());
 export default {

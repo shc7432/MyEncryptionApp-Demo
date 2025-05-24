@@ -33,6 +33,8 @@
 
 <script>
 import '../simple-data-crypto-file-preview.js';
+import { version } from 'play-video-streamed';
+console.log('play-video-streamed version:', version());
 export default {
     data() {
         return {

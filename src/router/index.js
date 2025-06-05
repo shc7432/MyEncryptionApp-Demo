@@ -1,9 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import MessagePage from '../views/MessagePage.vue'
-import FilePage from '../views/FilePage.vue'
-import FileClassicPage from '../views/FileClassicPage.vue'
-import VideoDecryption from '../views/VideoDecryption.vue'
-import FilePreview from '../views/FilePreview.vue'
+const MessagePage = () => import('../views/MessagePage.vue')
+const FilePage = () => import('../views/FilePage.vue')
+const FileClassicPage = () => import('../views/FileClassicPage.vue')
+const VideoDecryption = () => import('../views/VideoDecryption.vue')
+const FilePreview = () => import('../views/FilePreview.vue')
 
 const routes = [
   {

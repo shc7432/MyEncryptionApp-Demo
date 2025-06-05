@@ -80,7 +80,7 @@ export default {
         this.selectedFile = await fileHandle.getFile();
         this.statusMessage = `已选择文件: ${this.selectedFile.name}`;
       } catch (error) {
-        this.statusMessage = '文件选择取消或出错: ' + error.message;
+        this.statusMessage = '文件选择取消或出错: ' + error;
       }
     },
     async encryptFile() {
@@ -125,7 +125,7 @@ export default {
         await writable.close();
         this.statusMessage = `文件加密成功: ${encryptedFileName}`;
       } catch (error) {
-        this.statusMessage = '加密失败: ' + error.message;
+        this.statusMessage = '加密失败: ' + error;
       } finally {
         this.isLoading = false;
       }
@@ -168,7 +168,7 @@ export default {
         await writable.close();
         this.statusMessage = `文件解密成功: ${decryptedFileName}`;
       } catch (error) {
-        this.statusMessage = '解密失败: ' + error.message;
+        this.statusMessage = '解密失败: ' + error;
       } finally {
         this.isLoading = false;
       }
@@ -220,7 +220,7 @@ export default {
         this.newPassword = '';
         this.confirmPassword = '';
       } catch (error) {
-        this.statusMessage = '密码更改失败: ' + error.message;
+        this.statusMessage = '密码更改失败: ' + error;
       } finally {
         this.isLoading = false;
       }

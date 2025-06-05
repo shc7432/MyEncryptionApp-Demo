@@ -47,7 +47,7 @@ export default {
         this.outputText = '加密中...'
         this.outputText = await encrypt_data(this.inputText, this.password)
       } catch (error) {
-        this.outputText = '加密失败: ' + error.message
+        this.outputText = '加密失败: ' + error
       } finally {
         this.isLoading = false
       }
@@ -63,7 +63,7 @@ export default {
         this.outputText = '解密中...'
         this.outputText = await decrypt_data(this.inputText, this.password)
       } catch (error) {
-        this.outputText = '解密失败: ' + error.message
+        this.outputText = '解密失败: ' + error
       } finally {
         this.isLoading = false
       }

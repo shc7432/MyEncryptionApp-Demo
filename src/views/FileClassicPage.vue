@@ -127,7 +127,7 @@ export default {
         
         this.statusMessage = `文件加密成功: ${encryptedFileName}`;
       } catch (error) {
-        this.statusMessage = '加密失败: ' + error.message;
+        this.statusMessage = '加密失败: ' + error;
       } finally {
         this.isLoading = false;
       }
@@ -177,7 +177,7 @@ export default {
         
         this.statusMessage = `文件解密成功: ${decryptedFileName}`;
       } catch (error) {
-        this.statusMessage = '解密失败: ' + error.message;
+        this.statusMessage = '解密失败: ' + error;
       } finally {
         this.isLoading = false;
       }
@@ -238,7 +238,7 @@ export default {
         this.newPassword = '';
         this.confirmPassword = '';
       } catch (error) {
-        this.statusMessage = '密码更改失败: ' + error.message;
+        this.statusMessage = '密码更改失败: ' + error;
       } finally {
         this.isLoading = false;
       }

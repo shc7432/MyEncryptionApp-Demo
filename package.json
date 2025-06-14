@@ -11,7 +11,7 @@
     "esbuild": ">=0.25.0",
     "mp4box": "^0.5.4",
     "play-video-streamed": "^5.6.2",
-    "simple-data-crypto": "^1.56.9",
+    "simple-data-crypto": "^1.56.11",
     "simple-data-crypto-file-preview": "https://github.com/shc0743/simple-data-crypto/raw/main/impl/JavaScript/util/simple-data-crypto-file-preview/simple-data-crypto-file-preview-1.0.0.tgz",
     "vue": "^3.3.0",
     "vue-router": "^4.5.0"
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
     "esbuild": ">=0.25.0",
+    "typescript": "^5.8.3",
     "vite": "^6.3.2"
   },
   "type": "module"

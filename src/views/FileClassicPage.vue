@@ -4,7 +4,7 @@
     
     <div class="input-section">
       <input type="file" ref="fileInput" @change="handleFileChange">
-      <input type="password" v-model="password" placeholder="输入密码">
+      <input autocomplete="off" type="password" v-model="password" placeholder="输入密码">
       
       <div class="chunk-size-group">
         <div class="chunk-size-header">
@@ -37,7 +37,7 @@
       
       <div class="password-change-section" v-if="showPasswordChange">
         <h3>更改密码</h3>
-        <input type="password" v-model="newPassword" placeholder="输入新密码">
+        <input autocomplete="off" type="password" v-model="newPassword" placeholder="输入新密码">
         <div class="button-group">
           <button @click="confirmPasswordChange" :disabled="isLoading">确认更改</button>
           <button @click="cancelPasswordChange" :disabled="isLoading">取消</button>

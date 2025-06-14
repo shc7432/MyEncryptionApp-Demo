@@ -1,13 +1,13 @@
 <template>
-  <div class="file-page">
+  <div class="file-page" @dragover.capture="handleDragOver" @drop="handleDrop">
     <h2>文件加密/解密</h2>
     
     <div class="input-section">
       <div class="file-select-group">
-        <button @click="selectFile" style="flex: unset; padding: 10px 20px;">选择文件</button>
+        <button @click="selectFile" style="flex: unset; padding: 10px 20px;">选择或拖拽文件</button>
         <div class="file-name">{{ selectedFile?.name || '没有选择文件' }}</div>
       </div>
-      <input type="password" v-model="password" placeholder="输入密码">
+      <input autocomplete="off" type="password" v-model="password" placeholder="输入密码">
       
       <div class="chunk-size-group">
         <div class="chunk-size-header">
@@ -41,7 +41,7 @@
     
     <div class="password-change-section" v-if="showPasswordChange">
       <h3>更改密码</h3>
-      <input type="password" v-model="newPassword" placeholder="输入新密码">
+      <input autocomplete="off" type="password" v-model="newPassword" placeholder="输入新密码">
       <div class="button-group">
         <button @click="confirmPasswordChange" :disabled="isLoading">确认更改</button>
         <button @click="cancelPasswordChange" :disabled="isLoading">取消</button>
@@ -224,7 +224,33 @@ export default {
       } finally {
         this.isLoading = false;
       }
-    }
+    },
+    handleDragOver(e) {
+      if (!e.dataTransfer.items.length || e.dataTransfer.items[0].kind !== 'file') return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'link';
+    },
+    /**
+     * @param { DragEvent } ev
+     */
+    handleDrop(ev) {
+      if (!ev.dataTransfer.items.length || ev.dataTransfer.items[0].kind !== 'file') return;
+      ev.preventDefault();
+      if (ev.dataTransfer.items.length > 1) {
+        this.statusMessage = '文件过多。一次只能处理一个文件。'
+        return
+      }
+      queueMicrotask(async ()=>{
+        this.selectedFileHandle = await ev.dataTransfer.items[0].getAsFileSystemHandle();
+        if (!(this.selectedFileHandle instanceof FileSystemFileHandle)) {
+          this.statusMessage = '不支持选择文件夹';
+          this.selectedFile = null
+          return;
+        }
+        this.selectedFile = await this.selectedFileHandle.getFile(); 
+        this.statusMessage = `已选择文件: ${this.selectedFileHandle.name}`
+      });
+    },
   }
 }
 </script>

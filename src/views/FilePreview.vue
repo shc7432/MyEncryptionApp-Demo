@@ -11,7 +11,7 @@
 
         <input v-if="mode === 'local'" type="file" ref="filebox" />
         <input v-if="mode === 'remote'" type="text" v-model="fileUrl" placeholder="输入文件URL" />
-        <input type="password" v-model="password" placeholder="输入解密密码" @change.stop />
+        <input autocomplete="off" type="password" v-model="password" placeholder="输入解密密码" @change.stop />
         <select v-model="type" @change.stop>
             <option value="text/plain">文本</option>
             <option value="image">图片</option>

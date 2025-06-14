@@ -4,7 +4,7 @@
     
     <div class="input-section">
       <textarea v-model="inputText" placeholder="输入要加密的消息或要解密的密文"></textarea>
-      <input type="password" v-model="password" placeholder="输入密码">
+      <input autocomplete="off" type="password" v-model="password" placeholder="输入密码">
       
       <div class="button-group">
         <button @click="encryptText" :disabled="isLoading">加密</button>

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="app">
     <nav>
       <router-link to="/message">消息</router-link>
       <router-link to="/file" v-show="supportsFileAPI">文件</router-link>
@@ -23,10 +23,14 @@ export default {
 </script>
 
 <style>
-#app {
+.app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
+  position: absolute;
+  inset: 0;
+  padding: 10px;
+  overflow: auto
 }
 
 nav {
